@@ -10,7 +10,7 @@ function GetStringBetweenTwoStrings($openingtag, $closingtag, $html)
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls12
-$webreq = Invoke-WebRequest $url
+$webreq = Start-BitsTransfer $url
 $html=$webreq.Content #| Out-File C:\temp\output.txt
 
 $title=GetStringBetweenTwoStrings -openingtag "<title>" -closingtag "</title>" -html $html
@@ -37,6 +37,6 @@ ForEach ($metatag in $metatags)
     $imageurl=(($metatag -replace "`"/>","") -replace "<meta property=`"og:image`" content=`"","")
     Write-Host $imageurl
 
-    Invoke-WebRequest -Uri $imageurl -OutFile "$($saveto)`\Image_$('{0:d2}' -f [int]$int).jpg" -TimeoutSec 1500
+    Start-BitsTransfer $imageurl -Destination "$($saveto)`\Image_$('{0:d2}' -f [int]$int).jpg" -MaxDownloadTime 1500
     $int++
 }
